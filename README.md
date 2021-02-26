@@ -11,31 +11,33 @@ On the client side there is only one route, /candidates
 that uses the API to show a list of candidates.
 
 ## Requirements
-
+```
 docker
 docker-compose
 node 12
 npm 7
-
+```
 ## Running the projects
 
 ### Server
 
 This will run the php app and a mariadb database, the php app runs in port 8080
-
+```
 cd server
 docker-compose up -d
 docker-compose exec php php composer.phar install
 docker-compose exec php vendor/bin/phinx migrate
 docker-compose exec php vendor/bin/phinx seed:run
+```
 
 ### Client
 
 This will run the ember app, the front end run in port 4200, and proxy the api requests
-
+```
 cd client
 npm install
 npm start
+```
 
 # HOMEWORK
 
