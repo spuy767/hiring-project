@@ -1,0 +1,15 @@
+{{page-title "Candidates"}}
+{{outlet}}
+
+<h1>Listing candidates</h1>
+
+{{#each model as |applicant|}}
+<div>
+  <h2>{{applicant.name}}</h2>
+  <p>Age: {{applicant.name}}</p>
+</div>
+{{else}}
+<div>No records found</div>
+{{/each}}
+
+<button {{on 'click' (action 'addNew')}} >Add new</button>

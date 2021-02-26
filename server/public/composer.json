@@ -1,0 +1,20 @@
+{
+    "name": "hiring/server",
+    "description": "test project for checking devs skills",
+    "type": "project",
+    "require-dev": {
+    },
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Marcelo Andrade R.",
+            "email": "marcelo.andrade.r@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+      "php": "^7.3",
+      "ext-phalcon": "^4.0.1",
+      "robmorgan/phinx": "^0.5.3"
+    }
+}
