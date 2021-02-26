@@ -1,8 +1,8 @@
 Hiring Project Exercise
 =======================
 
-The project is a super simple API done in (phalcon)[https://phalcon.io/en-us]
-and an (ember.js)[https://emberjs.com/] frontend app.
+The project is a super simple API done in [phalcon](https://phalcon.io/en-us)
+and an [ember.js](https://emberjs.com/) frontend app.
 
 The model is just one table of `candidates` with name and age.
 The API has implemented the GET /api/applicants.
