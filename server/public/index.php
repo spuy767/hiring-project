@@ -1,8 +1,11 @@
 <?php
 
+use Phalcon\Di;
 use Phalcon\Loader;
+use Phalcon\Http\Response;
 use Phalcon\Mvc\Micro;
 use Phalcon\Di\FactoryDefault;
+use Phalcon\Validation\Message;
 use Phalcon\Db\Adapter\Pdo\Mysql as PdoMysql;
 
 $loader = new Loader();
@@ -70,5 +73,35 @@ $app->get(
     echo json_encode(['data' => $data]);
   }
 );
+
+/**
+ * @param Message[] $messages
+ * @return array
+ */
+$errorFormatter = function (array $messages): array {
+    $errorMessageArray = [];
+    foreach ($messages as $message) {
+        $errorMessageArray[] = [
+            'detail' => $message->getMessage(),
+            'source' => [
+                'pointer' => "data/attributes/{$message->getField()}",
+            ],
+        ];
+    }
+    return $errorMessageArray;
+};
+
+$app->post('/api/applicants', function() use ($errorFormatter) {
+    $request = $this->request->getJSONRawBody();
+    if (!$request || !property_exists($request, 'data') || $request->data->type !== 'applicants') {
+        return (new Response())->setStatusCode(400)->setJsonContent(['message' => 'Improperly formatted Request.'])->send();
+    }
+    $candidate = (new \App\Models\Candidates());
+    $candidate->assign((array)$request->data->attributes);
+    if (!$candidate->create()) {
+        return (new Response())->setStatusCode(422)->setJSONContent(['errors' => $errorFormatter($candidate->getMessages()) ])->send();
+    }
+    return (new Response())->setJSONContent(['data' => $candidate])->send();
+});
 
 $app->handle($_SERVER['REQUEST_URI']);

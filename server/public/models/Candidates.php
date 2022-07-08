@@ -7,6 +7,7 @@ use Phalcon\Messages\Message;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\Uniqueness;
 use Phalcon\Validation\Validator\InclusionIn;
+use Phalcon\Validation\Validator\Between;
 
 class Candidates extends Model
 {
@@ -24,11 +25,14 @@ class Candidates extends Model
             )
         );
 
-        if ($this->age < 18) {
-            $this->appendMessage(
-                new Message('Candidate must be adult')
-            );
-        }
+        $validator->add(
+            'age',
+            new Between([
+                'minimum' => 18,
+                'maximum' => 4294967295,
+                'message' => 'Candidate must be an adult.'
+            ])
+        );
 
         // Validate the validator
         return $this->validate($validator);

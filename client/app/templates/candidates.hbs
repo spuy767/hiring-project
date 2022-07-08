@@ -6,10 +6,37 @@
 {{#each model as |applicant|}}
 <div>
   <h2>{{applicant.name}}</h2>
-  <p>Age: {{applicant.name}}</p>
+  <p>Age: {{applicant.age}}</p>
 </div>
 {{else}}
 <div>No records found</div>
 {{/each}}
-
+<hr>
+<div>
+  {{#each model.errors.name as |error|}}
+      <div style="color: red;">
+        {{error.message}}
+      </div>
+  {{/each}}
+  <label for="name">Name: </label>
+  <Input
+    id="name"
+    @type="text"
+    @value={{mut (get this.candidate 'name') }}
+  />
+</div><br>
+<div>
+  {{#each model.errors.name as |error|}}
+      <div style="color: red;">
+        {{error.message}}
+      </div>
+  {{/each}}
+  <label for="age">Age: </label>
+  <Input
+    id="age"
+    @type="number"
+    @value={{mut (get this.candidate 'age') }}
+  />
+</div>
+<br>
 <button {{on 'click' (action 'addNew')}} >Add new</button>

@@ -3,6 +3,7 @@
     "description": "test project for checking devs skills",
     "type": "project",
     "require-dev": {
+        "phalcon/migrations": "^2.2"
     },
     "license": "proprietary",
     "authors": [
