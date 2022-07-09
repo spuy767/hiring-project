@@ -86,13 +86,18 @@ $app->get(
   }
 );
 
-$app->post('/api/applicants', function() use ($errorFormatter) {
-    $request = $this->request->getJSONRawBody();
-    if (!$request || !property_exists($request, 'data') || $request->data->type !== 'applicants') {
+$app->post('/api/applicants', function() {
+    $request = $this->request->getJSONRawBody(true);
+    if (
+        !$request ||
+        !array_key_exists('data', $request) ||
+        !array_key_exists('attributes', $request['data']) ||
+        $request['data']['type'] !== 'applicants'
+    ) {
         return (new Response())->setStatusCode(400)->setJsonContent(['message' => 'Improperly formatted Request.'])->send();
     }
     $candidate = (new \App\Models\Candidates());
-    $candidate->assign((array)$request->data->attributes);
+    $candidate->assign($request['data']['attributes']);
     if (!$candidate->create()) {
         return (new Response())->setStatusCode(422)->setJSONContent([
             'errors' => $this->getDi()->get('errorMessageFormatter', [
