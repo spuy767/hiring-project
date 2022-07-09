@@ -13,7 +13,7 @@
 {{/each}}
 <hr>
 <div>
-  {{#each model.errors.name as |error|}}
+  {{#each applicant.errors.name as |error|}}
       <div style="color: red;">
         {{error.message}}
       </div>
@@ -26,7 +26,7 @@
   />
 </div><br>
 <div>
-  {{#each model.errors.name as |error|}}
+  {{#each applicant.errors.age as |error|}}
       <div style="color: red;">
         {{error.message}}
       </div>

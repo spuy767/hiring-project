@@ -31,6 +31,18 @@ $container->set(
         );
     }
 );
+$container->set('errorMessageFormatter', function (array $messages): array {
+    $errorMessageArray = [];
+    foreach ($messages as $message) {
+        $errorMessageArray[] = [
+            'detail' => $message->getMessage(),
+            'source' => [
+                'pointer' => "data/attributes/{$message->getField()}",
+            ],
+        ];
+    }
+    return $errorMessageArray;
+});
 
 $app = new Micro($container);
 
@@ -74,23 +86,6 @@ $app->get(
   }
 );
 
-/**
- * @param Message[] $messages
- * @return array
- */
-$errorFormatter = function (array $messages): array {
-    $errorMessageArray = [];
-    foreach ($messages as $message) {
-        $errorMessageArray[] = [
-            'detail' => $message->getMessage(),
-            'source' => [
-                'pointer' => "data/attributes/{$message->getField()}",
-            ],
-        ];
-    }
-    return $errorMessageArray;
-};
-
 $app->post('/api/applicants', function() use ($errorFormatter) {
     $request = $this->request->getJSONRawBody();
     if (!$request || !property_exists($request, 'data') || $request->data->type !== 'applicants') {
@@ -99,9 +94,21 @@ $app->post('/api/applicants', function() use ($errorFormatter) {
     $candidate = (new \App\Models\Candidates());
     $candidate->assign((array)$request->data->attributes);
     if (!$candidate->create()) {
-        return (new Response())->setStatusCode(422)->setJSONContent(['errors' => $errorFormatter($candidate->getMessages()) ])->send();
+        return (new Response())->setStatusCode(422)->setJSONContent([
+            'errors' => $this->getDi()->get('errorMessageFormatter', [
+                $candidate->getMessages()
+            ]),
+        ])->send();
     }
-    return (new Response())->setJSONContent(['data' => $candidate])->send();
+    $candidate->type = 'applicant';
+    return (new Response())->setJSONContent(['data' => [
+        'type' => 'applicant',
+        'id' => $candidate->id,
+        'attributes' => $candidate->toArray([
+            'name',
+            'age',
+        ]),
+    ]])->send();
 });
 
 $app->handle($_SERVER['REQUEST_URI']);
